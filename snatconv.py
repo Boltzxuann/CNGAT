@@ -114,13 +114,21 @@ class SNATConv(nn.Module):
         graph = graph.local_var()
         if self.first_layer:
             if isinstance(feat, tuple):
-                index_rear_src = feat[0] > self.threhold  ##找到大于阈值的节点索引
-                index_other_src = feat[0] <=self.threhold 
-                index_rear_dst = feat[1] > self.threhold  ##找到大于阈值的节点索引
-                index_other_dst = feat[1] <=self.threhold  
+                index_rear_src = feat[0].mean(dim=1).view(-1,1) > self.threhold  ##找到大于阈值的节点索引            
+                index_other_src = feat[0].mean(dim=1).view(-1,1) <=self.threhold              
+                index_rear_dst = feat[1].mean(dim=1).view(-1,1)> self.threhold  ##找到大于阈值的节点索引
+                index_other_dst = feat[1].mean(dim=1).view(-1,1) <=self.threhold  
+                
+                index_rear_src = index_rear_src.expand(index_rear_src.size(0),self._in_src_feats)
+                index_rear_dst = index_rear_dst.expand(index_rear_dst.size(0),self._in_dst_feats)
+                index_other_src = index_other_src.expand(index_other_src.size(0),self._in_src_feats)
+                index_other_dst = index_other_dst.expand(index_other_dst.size(0),self._in_dst_feats) 
             else:
-                index_rear = feat > self.threhold  ##找到大于阈值的节点索引
-                index_other = feat<=self.threhold
+                
+                index_rear = feat.mean(dim=1).view(-1,1)  > self.threhold  ##找到大于阈值的节点索引
+                index_other = feat.mean(dim=1).view(-1,1) <=self.threhold
+                index_rear = index_rear.expand(index_rear.size(0),self._in_src_feats)
+                index_other = index_other.expand(index_other.size(0),self._in_src_feats)
             #index_0 = index_other
             #index_1 = index_rear
         else:
@@ -205,27 +213,19 @@ class SNATConv(nn.Module):
         el_rear = (feat_src_rear * self.attn_l).sum(dim=-1).unsqueeze(-1)
         er_rear = (feat_dst_rear * self.attn_r).sum(dim=-1).unsqueeze(-1)        
         #graph.nodes[index_other.flatten(0)].srcdata.update({'ft': feat_src, 'el': el})
-        if self.first_layer:
-            #id_other = np.where(index_other.flatten(0).cpu().numpy() == True)
-            id_other = th.where(index_other.flatten(0) == True)
-            id_other = id_other[0].flatten()         
-        else:
-            #id_other = np.where(index_other[:,0].flatten(0).cpu().numpy() == True)
-            id_other = th.where(index_other[:,0].flatten(0))
-            id_other = id_other[0].flatten()
+
+        id_other = th.where(index_other[:,0].flatten(0))
+        id_other = id_other[0].flatten()
+            
         graph.nodes[id_other].data['ft']=feat_src
         graph.nodes[id_other].data['el']=el
         #graph.nodes[index_other.flatten(0)].dstdata.update({'er': er})
         graph.nodes[id_other].data['er']=er
         #graph.nodes[index_rear.flatten(0)].srcdata.update({'ft': feat_src_rear, 'el': el_rear})
-        if self.first_layer:
-            #id_rear = np.where(index_rear.flatten(0).cpu().numpy() == True)
-            id_rear = th.where(index_rear.flatten(0) == True)
-            id_rear = id_rear[0].flatten()   
-        else:
-            #id_rear = np.where(index_rear[:,0].flatten(0).cpu().numpy() == True)
-            id_rear = th.where(index_rear[:,0].flatten(0) == True)
-            id_rear = id_rear[0].flatten() 
+
+        id_rear = th.where(index_rear[:,0].flatten(0) == True)
+        id_rear = id_rear[0].flatten() 
+        
         graph.nodes[id_rear].data['ft']=feat_src_rear
         graph.nodes[id_rear].data['el']=el_rear
         #graph.nodes[index_rear.flatten(0)].dstdata.update({'er': er_rear})
