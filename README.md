@@ -9,3 +9,5 @@ b)PyTorch : https://pytorch.org/
 c) deep graph libary : https://www.dgl.ai/
 <br>
 ## How to use
+
+*Insecting the CNGAT graph convolution modular into DGL library*：
