@@ -14,4 +14,4 @@ c) deep graph libary : https://www.dgl.ai/
 
 <br>
 
-* ***Train the CNGAT model***： Just run `CNGAT_train.ipynb` .
+* ***Train the CNGAT model***： Just run `CNGAT_train.ipynb` on the jupyternotebook.
