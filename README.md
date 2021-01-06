@@ -2,7 +2,7 @@ CNGAT
 =========
 ------a graph convolution network for radar precipitation estimation
 <br>
-## Environment settings
+## Environmental settings
 a) anaconda & jupyter notebook : https://www.anaconda.com/products/individual
 <br>
 b)PyTorch : https://pytorch.org/
