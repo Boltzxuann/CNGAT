@@ -15,8 +15,8 @@ c) deep graph libary : https://www.dgl.ai/
 
 <br>
 
-* ***the dataset***: The dataset (toy) is provided by this url:https://pan.baidu.com/s/1A3qW99L_aEoJK0xN5JJQsQ , and the extracting code is `lck2`.
+* ***the dataset***: The dataset (toy) is provided by this url:https://pan.baidu.com/s/1EoLW9vgpIBtgaPX1QNWqwQ , and the extracting code is `5jn6`.
 
 <br>
 
-* ***Train the CNGAT model***： Just run `CNGAT_train.ipynb` on the jupyter notebook.
+* ***Train the CNGAT model***： Just run `demo_CNGAT_train_1frame.ipynb` on the jupyter notebook.
